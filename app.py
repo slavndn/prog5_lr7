@@ -5,7 +5,6 @@ import time
 
 app = Flask(__name__)
 
-# Переменные для хранения данных
 current_rates = {}
 previous_rates = {}
 
@@ -19,10 +18,10 @@ def currency_updater():
     global current_rates, previous_rates
     while True:
         new_rates = fetch_currency_data()
-        if current_rates:  # Сохраняем текущие курсы как предыдущие
+        if current_rates:  
             previous_rates = current_rates
-        current_rates = new_rates  # Обновляем текущие курсы
-        time.sleep(10)  # Задержка в 10 секунд
+        current_rates = new_rates  
+        time.sleep(10)  
 
 @app.route('/')
 def index():
@@ -33,7 +32,7 @@ def index():
 def get_rates():
     """Возвращает текущие и предыдущие курсы валют"""
     global current_rates, previous_rates
-    currency_code = request.args.get('currency_code')  # Получаем код валюты из запроса
+    currency_code = request.args.get('currency_code')  
     if not currency_code or currency_code not in current_rates:
         return jsonify({'error': 'Invalid currency code'}), 400
 
@@ -45,7 +44,6 @@ def get_rates():
         'previous_rate': previous_rate['Value'] or current_rate['Previous']
     })
 
-# Запуск фонового процесса
 threading.Thread(target=currency_updater, daemon=True).start()
 
 if __name__ == '__main__':
