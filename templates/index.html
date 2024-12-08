@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Tracker</title>
+    <script>
+        async function fetchRates() {
+            const currencyCode = document.getElementById('currency').value;
+            const response = await fetch(`/get_rates?currency_code=${currencyCode}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById('result').innerHTML = `
+                    <table border="1" cellpadding="10">
+                        <tr>
+                            <th>Код валюты</th>
+                            <th>Текущий курс (₽)</th>
+                            <th>Курс 10 секунд назад (₽)</th>
+                        </tr>
+                        <tr>
+                            <td>${data.currency_code}</td>
+                            <td>${data.current_rate.toFixed(2)}</td>
+                            <td>${data.previous_rate.toFixed(2)}</td>
+                        </tr>
+                    </table>
+                `;
+            } else {
+                alert(data.error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Currency Tracker</h1>
+    <label for="currency">Выберите валюту:</label>
+    <select id="currency">
+        <option value="USD">USD (Доллар США)</option>
+        <option value="EUR">EUR (Евро)</option>
+        <option value="GBP">GBP (Фунт стерлингов)</option>
+    </select>
+    <button onclick="fetchRates()">Получить курс</button>
+
+    <h2>Результаты:</h2>
+    <div id="result">
+        <!-- Здесь появится таблица с курсами -->
+   
